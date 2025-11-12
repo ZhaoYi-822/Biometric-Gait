@@ -25,18 +25,8 @@ def  gait_construct():
 
     for entry in sorted_entries :
 
-
-
         data = pd.read_csv(path+'/'+entry.name)
         data = data.drop(['Measure number', 'Timestamp','MotionDeg','Roll','Pitch','Yaw'], axis=1)
-
-        # num_rows = data.shape[0]
-        # numbers = [i] * num_rows
-        # i = i + 1
-        # result.extend(numbers)
-
-        # data=data.dropna()
-
         final_data = pd.concat([final_data, data],axis=0)
 
     final_data.to_csv('sample_dataset/sp_gait_dataset.csv')
@@ -49,33 +39,22 @@ def gait_number():
     sorted_entries = sorted(obj, key=lambda entry: entry.name)
 
     result = []
-    # 遍历每个 CSV 文件
+    
     for i, file_name in enumerate(os.listdir(path), start=1):
-        # 读取 CSV 文件
         file_path = os.path.join(path, file_name)
-
-        # 读取 CSV 文件
         df = pd.read_csv(file_path)
-
-        # 获取行数
-
         num_rows = df.shape[0]
-
-        # 生成相应数量的数字
         numbers = [i] * num_rows
-
-        # 将结果添加到列表中
         result.extend(numbers)
     result=pd.DataFrame(result)
     result.to_csv('sample_dataset/sp_gait_number.csv')
 
 
 def butter_highpass(cutoff, fs, order=6):
-    nyq = 0.5 * fs  # 奈奎斯特频率
+    nyq = 0.5 * fs 
     normal_cutoff = cutoff / nyq
     b, a = butter(order, normal_cutoff, btype='low', analog=False)
     return b, a
-
 
 def gait_removenoise(data):
     cutoff=6
@@ -166,24 +145,10 @@ def data_sample():
 
     data=pd.read_csv('sample_dataset/sp_gait_dataset.csv')
     label=pd.read_csv('sample_dataset/sp_gait_label.csv')
-
-
-
-
     cc = ClusterCentroids(sampling_strategy='auto', random_state=42)
     X_resampled, y_resampled = cc.fit_resample( data, label)
-
-    #
-    #
-    print(f"ClusterCentroids欠采样后数据集类别分布: {Counter(y_resampled)}")
-
-    #
-    #
     enn = EditedNearestNeighbours(sampling_strategy='auto', n_neighbors=3, kind_sel='all', n_jobs=-1)
     X_final, y_final = enn.fit_resample(X_resampled, y_resampled)
-
-
-    print(f"ENN欠采样后数据集类别分布: {Counter(y_final)}")
     x = 1
 
 
@@ -274,4 +239,5 @@ if __name__ == '__main__':
     # plt.title('频谱图')
     # plt.grid()
     # plt.show()
+
 
