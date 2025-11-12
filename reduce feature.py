@@ -21,10 +21,8 @@ def avova(data):
     # sorted_p_values = p_values[indices]
     # sorted_features = indices
 
-    # 输出按 F 值排序的特征及其 F 值
     for i in range(len(sorted_features)):
-        print(f"特征 {sorted_features[i]} 的 F 值: {sorted_F_values[i]}")
-        # print('P_values:', p_values)
+        print('P_values:', p_values)
 
 
 
@@ -32,7 +30,6 @@ def heatmap(data):
 
     X=data.iloc[:, :17]
     corr_matrix = np.corrcoef(X, rowvar=False)
-    # 绘制相关性热图
     plt.figure(figsize=(12, 8))
     sns.heatmap(corr_matrix, annot=True, fmt='.2f', cmap='coolwarm', xticklabels=True, yticklabels=True)
     plt.title("Correlation Heatmap")
@@ -48,14 +45,12 @@ def  feature_imp(data):
 
     importances = model.feature_importances_
 
-    # 对特征重要性进行降序排序
-    indices = np.argsort(importances)[::-1]  # 将重要性分数从高到低排序
-    sorted_importances = importances[indices]  # 排序后的特征重要性分数
-    sorted_features = indices  # 排序后的特征索引
-
-    # 输出按重要性排序的特征及其分数
+  
+    indices = np.argsort(importances)[::-1] 
+    sorted_importances = importances[indices]  
+    sorted_features = indices 
     for i in range(len(sorted_features)):
-        print(f"特征 {sorted_features[i]} 的重要性分数: {sorted_importances[i]}")
+        print(f"Feature {sorted_features[i]}: {sorted_importances[i]}")
 
 
 
@@ -73,22 +68,12 @@ def RFE(data):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # 创建一个逻辑回归模型
     model = LogisticRegression(max_iter=500)
-
-    # 创建RFECV对象，使用5折交叉验证自动选择最优特征数量
     selector = RFECV(estimator=model, step=1, cv=StratifiedKFold(5), scoring='accuracy')
-
-    # 训练RFECV
     selector.fit(X_scaled , y)
 
-    # 输出最优特征数量
     print(f"最优特征数量: {selector.n_features_}")
-
-    # 输出被选择的特征
     print(f"选择的特征: {selector.support_}")
-
-    # 可视化选择过程
     plt.figure(figsize=(10, 6))
     plt.title("RFECV - Optimal Number of Features")
     plt.xlabel("Number of Features Selected")
@@ -104,4 +89,5 @@ if __name__=='__main__':
     # avova(data)
     # heatmap(data)
     feature_imp(data)
+
     # RFE(data)
